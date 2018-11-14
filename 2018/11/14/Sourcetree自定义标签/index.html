@@ -149,24 +149,24 @@
 <blockquote>
 <p>好处：不用一个个去下载GitLab上的资源，一键下载所有的GitLab上的资源。</p>
 </blockquote>
-<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/sourcetree_custom2.png" alt=""></p>
+<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label1.png" alt=""></p>
 <h1 id="2、能否实现？"><a href="#2、能否实现？" class="headerlink" title="2、能否实现？"></a>2、能否实现？</h1><ul>
 <li><p>分析？？？</p>
 <p>  我们都知道在之前SourceTree是可以自定义Action的，先找到actions.plist文件。前往（~/Library/Application Support/SourceTree/actions.plist）查看。</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label2.png" alt=""></p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label2.png" alt=""></p>
 <p>  通过发现、分析 browser.plist文件有那么点意思，通过Sublime Text查看。</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label3.png" alt=""></p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label3.png" alt=""></p>
 <p>  发现打开后的文件是一堆二进制文件，没法看。但actions.plist是能清晰的看到是以XML格式展示的代码。</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label4.png" alt=""></p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label4.png" alt=""></p>
 </li>
 <li><p>难道这个页面不是browser.plist？？？？猜错了？？？继续分析…..</p>
 <p>  我们知道在归档plist文件时，其实是有三个格式选项归档plist文件：</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label5.png" alt=""></p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label5.png" alt=""></p>
 <p>  不难发现 actions.plist文件是通过第二种XML格式归档的，而browser.plist文件是通过第三种NSPropertyListBinaryFormat_v1_0二进制文件格式归档的。</p>
 </li>
 <li><p>查看browser.plist文件：</p>
 <pre><code>既然是归档文件，肯定能通过Xcode打开。
-</code></pre><p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label6.png" alt=""></p>
+</code></pre><p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label6.png" alt=""></p>
 </li>
 </ul>
 <p>发现惊人的相似并且有更大的发现。</p>
@@ -180,19 +180,19 @@
 
 &gt;我们以只有一个标签和只有一个action为例来形成对比(方便研究)：
 
-![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label7.png)
-![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label8.png)
+![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label7.png)
+![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label8.png)
 
 我们发现browser和action有2处最大的不同,其他基本上类似：
 
 1. browser.plist文件多了几个key
 
-![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label9.png)
+![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label9.png)
 
 2.继承关系
 
-![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label10.png)
-![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label11.png)
+![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label10.png)
+![](https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label11.png)
 
 &gt;从第2处我们得知：
 
@@ -203,16 +203,16 @@
 <li><p>STBrowserNode、STTreeNode和上面的几处key是啥，猜测：几处key是不是STBrowserNode或STTreeNode 属性？</p>
 <ul>
 <li><p>通过hopper 3工具我们进行反编译，查看SourceTree具体Class，直接搜索STBrowserNode关键字。</p>
-<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label12.png" alt="">    </p>
+<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label12.png" alt="">    </p>
 </li>
 </ul>
 </li>
 </ul>
 <p>发现children，parent，isLeaf这三个属性果然是属于STTreeNode这个类的属性。</p>
 <h1 id="4、解档browser-plist文件。"><a href="#4、解档browser-plist文件。" class="headerlink" title="4、解档browser.plist文件。"></a>4、解档browser.plist文件。</h1><p>SourceTree Browser页面。</p>
-<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label13.png" alt="">    </p>
+<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label13.png" alt="">    </p>
 <p>代码解档：</p>
-<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label14.png" alt="">    </p>
+<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label14.png" alt="">    </p>
 <p>通过打印出来的数据发现：</p>
 <ul>
 <li><p>解档出来的是个数组</p>
@@ -224,12 +224,12 @@
 </ul>
 <h1 id="5、属性分析（name，path，hashValue以及repositoryType，children，parent，isLeaf）"><a href="#5、属性分析（name，path，hashValue以及repositoryType，children，parent，isLeaf）" class="headerlink" title="5、属性分析（name，path，hashValue以及repositoryType，children，parent，isLeaf）"></a>5、属性分析（name，path，hashValue以及repositoryType，children，parent，isLeaf）</h1><ul>
 <li><p>搭建工程</p>
-<p>  根据上面的分析我们搭建的工程目录如下：<br>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label15.png" alt="">    </p>
+<p>  根据上面的分析我们搭建的工程目录如下：<br>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label15.png" alt="">    </p>
 </li>
 </ul>
 <ul>
 <li><p>输出name，path，hashValue，repositoryType，children，parent，isLeaf 这几个key对应的值。</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label16.png" alt="">    </p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label16.png" alt="">    </p>
 </li>
 </ul>
 <p>通过打印出来的数据发现：</p>
@@ -256,7 +256,7 @@
 <p>SourceTree是存在组的概念，这个属性是不是存在子的仓库？</p>
 </blockquote>
 <p>  实践：在组里面添加仓库。</p>
-<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label17.png" alt="">    </p>
+<p>  <img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label17.png" alt="">    </p>
 </li>
 </ul>
 <blockquote>
@@ -274,7 +274,7 @@
 NSInteger hashValue = [testStr hash];
 </code></pre><p>继续分析这个hashValue怎么来的？</p>
 <p>通过Hopper3 查看源码，分析STBrowserNode 这个类。</p>
-<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/MapDemo/images/sourcetree_label18.png" alt="">    </p>
+<p><img src="https://github.com/Thomaszhouwu/OpenMaps/blob/master/images/sourcetree_label18.png" alt="">    </p>
 <p>发现在init方法时，默认会给hashValue属性赋值：</p>
 <p>解读里面代码OC代码如下：</p>
 <pre><code>self.hashValue = [[[NSProcessInfo processInfo] globallyUniqueString] hash];
