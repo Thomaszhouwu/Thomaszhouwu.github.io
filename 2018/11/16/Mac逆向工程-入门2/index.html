@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="前言通过之前的【Mac逆向工程-入门1】我们对Mac逆向有一定的认识。
+大致思路：
+界面分析  -&amp;gt;  动态分析  -&amp;gt;  静态分析  -&amp;gt;  动态库注入  -&amp;gt;打包重新签名等。
+目录
+汇编知识
+
+寄存器
+常用指令
+Hopper出的源码分析
+
+
+跟踪方法
+
+资源文件
+
+总结
+">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Thomas">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Mac逆向工程-入门2">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Thomas&#39;s博客">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>Mac逆向工程-入门2 - Thomas&#39;s博客</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="//unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Thomas's博客">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Thomas's博客">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/" title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/archives" title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/tags" title="Tags">
+                    Tags
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">Mac逆向工程-入门2</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-11-16</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>通过之前的【<a href="https://thomaszhouwu.github.io/2018/11/16/Mac%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B-%E5%85%A5%E9%97%A8/" target="_blank" rel="noopener">Mac逆向工程-入门1</a>】我们对Mac逆向有一定的认识。</p>
+<p>大致思路：</p>
+<p><code>界面分析  -&gt;  动态分析  -&gt;  静态分析  -&gt;  动态库注入  -&gt;打包重新签名等。</code></p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><p><a href="#1"><font size="4">汇编知识</font></a></p>
+<ul>
+<li><a href="#11"><font size="3">寄存器</font></a></li>
+<li><a href="#12"><font size="3">常用指令</font></a></li>
+<li><a href="#13"><font size="3">Hopper出的源码分析</font></a></li>
+</ul>
+</li>
+<li><p><a href="#2"><font size="4">跟踪方法</font></a></p>
+</li>
+<li><p><a href="#3"><font size="4">资源文件</font></a></p>
+</li>
+<li><p><a href="#5"><font size="4">总结</font></a></p>
+</li>
+</ul>
+<p>–</p>
+<h3 id="汇编知识"><a href="#汇编知识" class="headerlink" title="汇编知识"></a><a name="1"><font size="5">汇编知识</font></a></h3><h4 id="1、寄存器（又称缓存）"><a href="#1、寄存器（又称缓存）" class="headerlink" title="1、寄存器（又称缓存）"></a><a name="11">1、寄存器（又称缓存）</a></h4><p>寄存器是有限存贮容量的高速存贮部件，它们可用来暂存指令、数据和地址。</p>
+<p>一般寄存器:<code>AX</code>、<code>BX</code>、<code>CX</code>、<code>DX</code></p>
+<p><code>AX</code>:累积暂存器，<code>BX</code>:基底暂存器，<code>CX</code>:计数暂存器，<code>DX</code>:资料暂存器。</p>
+<p><code>EAX</code> 是”累加器”(accumulator), 它是很多加法乘法指令的缺省寄存器。</p>
+<p><code>EBX</code> 是”基地址”(base)寄存器, 在内存寻址时存放基地址。</p>
+<p><code>ECX</code> 是计数器(counter), 是重复(<code>REP</code>)前缀指令和LOOP指令的内定计数器。</p>
+<p><code>R0-R3</code>:用于函数参数及返回值的传递，调用函数的时候，参数先从R0依次传递。</p>
+<p><code>R4-R6</code>, <code>R8</code>, <code>R10-R11</code>:没有特殊规定，就是普通的通用寄存器。</p>
+<p><code>R7</code>:栈帧指针(Frame Pointer)，相对与<code>SP</code>，<code>R7</code>就是栈底，在进入新一个栈帧之后先把原来的R7压栈，然后R7保存当前<code>SP</code>。</p>
+<p><code>R9</code>:操作系统保留。</p>
+<p><code>R12</code>:又叫IP(intra-procedure scratch ), 要说清楚要费点笔墨，参见<a href="http://blog.csdn.net/gooogleman/article/details/3529413" target="_blank" rel="noopener">http://blog.csdn.net/gooogleman/article/details/3529413</a></p>
+<p><code>R13</code>:又叫<code>SP</code>(stack pointer)，是栈顶指针。</p>
+<p><code>R14</code>:又叫LR(link register)，存放函数的返回地址。</p>
+<p><code>R15</code>:又叫PC(program counter)，指向当前指令地址。</p>
+<p><code>CPSR</code>:当前程序状态寄存器(Current Program State Register)，在用户状态下存放像condition标志中断禁用等标志的。</p>
+<p>对于<code>x86</code>架构，字母<code>e</code>用作名称前缀，指示各寄存器大小为32位；对于<code>x86_64</code>寄存器，字母<code>r</code>用作名称前缀，指示各寄存器大小为64位。</p>
+<p>是64位,相对32位的x86来说,标识符发生了变化,比如:从原来的<code>ebp</code>变成了<code>rbp</code>。</p>
+<center><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-1.jpg" alt=""></center>
+
+<p>总结:</p>
+<p><code>X86-64</code>有16个64位寄存器，分别是：<code>rax</code>，<code>rbx</code>，<code>rcx</code>，<code>rdx</code>，<code>esi</code>，<code>edi</code>，<code>rbp</code>，<code>rsp</code>，<code>r8</code>，<code>r9</code>，<code>r10</code>，<code>r11</code>，<code>r12</code>，<code>r13</code>，<code>r14</code>，<code>r15</code>。</p>
+<p>其中：</p>
+<ul>
+<li><code>rax</code>(accumulator): 可用于存放函数返回值。</li>
+<li><code>rbp</code>(base pointer): 用于存放执行中的函数对应的栈帧的栈底地址。</li>
+<li><code>rsp</code>(stack poinger): 用于存放执行中的函数对应的栈帧的栈顶地址。</li>
+<li><code>ip</code>(instruction pointer): 指向当前执行指令的下一条指令。</li>
+<li><code>rdi</code>，<code>rsi</code>，<code>rdx</code>，<code>rcx</code>，<code>r8</code>，<code>r9</code> 用作函数参数，依次对应第1参数，第2参数。。。</li>
+<li><code>rbx</code>，<code>rbp</code>，<code>r12</code>，<code>r13</code>，<code>14</code>，<code>15</code> 用作数据存储，遵循被调用者使用规则，简单说就是随便用，调用子函数之前要备份它，以防他被修改。</li>
+<li><code>r10</code>，<code>r11</code> 用作数据存储，遵循调用者使用规则，简单说就是使用之前要先保存。</li>
+</ul>
+<h4 id="2、常用指令"><a href="#2、常用指令" class="headerlink" title="2、常用指令"></a><a name="12">2、常用指令</a></h4><ul>
+<li><p>mov（数据传送指令）</p>
+<p>c语言里的赋值</p>
+<p>在汇编语言中，MOV指令是数据传送指令，也是最基本的编程指令，用于将一个数据从源地址传送到目标地址（寄存器间的数据传送本质上也是一样的）。其特点是不破坏源地址单元的内容。</p>
+<pre><code>MOV   R0,R1 ; // R0 = R1;
+</code></pre><p>mov扩展 (原码，补码，反码，溢出，零标志位等)。</p>
+<p>比如10的原码就是00001010,+10的原码是00001010,最高位的0代表 这个数是正数(最高位就是符号位). -10的原码就是10001010,最高位的1代表这个数是负数。 </p>
+<p>+10的原码是00001010,那他的反码,补码都和原码相同 也是00001010,原因是正数的原 反 补码相同。</p>
+<p>-10的原码是10001010,那他的反码是11110101,也就是符号位不变,其他位0变1,1变0. 他的补码是在反码的基础上,最低位加1,也就是11110110。</p>
+<p>mov.w .w只是强调是32位架构。</p>
+<p>movs是mov的扩展，最后字母s代表影响标志位。</p>
+</li>
+<li><p>lea （数据传送指令）</p>
+<p>将源操作数、即存储单元的有效地址（偏移地址）传送到目的操作数，同mov指令类似。</p>
+<p>当源操作数很简单的情况下，完全可以用mov指令代替lea指令，如lea esi,Buffer，完全可以用指令mov esi,offset Buffer代替；但当源操作数稍微复杂一点的话，单用mov指令就代替不了了，至少要用到算术运算指令。指令集中提供lea指令，就是为了减少这些计算上的麻烦。</p>
+<pre><code>lea   edx,   [ebx+eax*4+3]
+</code></pre></li>
+<li><p>call（调用指令）</p>
+<p>常见的CPU的CALL指令的功能，就是以下两点：</p>
+<ul>
+<li><p>将下一条指令的所在地址（即当时程序计数器PC的内容）入栈。</p>
+</li>
+<li><p>并将子程序的起始地址送入PC（于是CPU的下一条指令就会转去执行子程序）。</p>
+</li>
+</ul>
+</li>
+<li><p>je jne jb jg jmp 等（<a href="http://blog.csdn.net/do2jiang/article/details/5262327" target="_blank" rel="noopener">跳转指令</a>） </p>
+<pre><code>if (a == b) // 相当于je
+if (a != b) // 相当于jne
+if (a &gt; b) // 相当于jg
+if (a &lt; b) // 相当于jb
+</code></pre></li>
+<li><p>test </p>
+<p>  测试一方寄存器是否为空。</p>
+<pre><code>test ecx, ecx
+jz somewhere
+
+如果ecx为零，设置ZF零标志为1，Jz跳转
+test       rbx, rbx
+je         0x10000ac78
+if（self） {
+}
+</code></pre></li>
+<li><p>sub(subtract减法指令)</p>
+<pre><code>sub ax,bx ;//ax = ax - bx  
+</code></pre></li>
+<li><p>add（加法指令）</p>
+<pre><code>add ax,bx
+</code></pre></li>
+<li><p>ret（返回指令）</p>
+<p>  相当于return。</p>
+</li>
+</ul>
+<p>实例：</p>
+<pre><code>push　　　　ebp　　　　　　　　　　　　　;ebp入栈　  压入函数调用方的EBP，Old EBP 
+mov　　　　　ebp,　esp　　　　　　　　;因为esp是堆栈指针，无法暂借使用，所以得用ebp来存取堆栈　  令当前EBP指向栈顶，此时的栈顶指向Old EBP  
+sub　　　　　esp,　0xxxxx　　　　　　　　;开创了一个新的栈帧，而大小是0xxxxx个字节　  在栈上开辟一些空间，存放局部变量等 
+
+add　　　　　esp,　0xxxxx　　　　　　　　;堆栈使用完毕，“还”回0xxxxx个字节给系统　  
+mov　　　　　esp,　ebp　　　　　　　　;恢复esp的值　 
+pop　　　　　ebp　　　　　　　　　　　　　;ebp出栈　 
+ret　
+</code></pre><p>调用一个函数时，先将堆栈原先的基址（EBP）入栈，以保存之前任务的信息。然后将栈顶指针的值赋给EBP，将之前的栈顶作为新的基址（栈底），然后再这个基址上开辟相应的空间用作被调用函数的堆栈。函数返回后，从EBP中可取出之前的ESP值，使栈顶恢复函数调用前的位置；再从恢复后的栈顶可弹出之前的EBP值，因为这个值在函数调用前一步被压入堆栈。这样，EBP和ESP就都恢复了调用前的位置，堆栈恢复函数调用前的状态。</p>
+<h4 id="3、Hopper出的伪代码分析"><a href="#3、Hopper出的伪代码分析" class="headerlink" title="3、Hopper出的伪代码分析"></a><a name="13">3、Hopper出的伪代码分析</a></h4><p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-3.jpg" alt=""></p>
+<pre><code>#define LOWORD(l)           ((WORD)((DWORD_PTR)(l) &amp; 0xffff))
+#define HIWORD(l)           ((WORD)((DWORD_PTR)(l) &gt;&gt; 16))
+</code></pre><p>这是windef.h头文件中对宏LOWORD和HIWORD的定义。</p>
+<p>作用分别是取出无符号长整型参数的高16位和低16位。</p>
+<p>因为一个长整型占32位，其中高低16位的值可能有不同的意义，需要通过这2个宏分别取出来使用。取出来的结果是一个无符号短整型的值。</p>
+<p>其原理正如定义那样，取低16位的宏LOWORD使用按位与操作符与数字0xffff运算，而数字0xffff是一个低16位全为1的数字，那么对其位与操作可以得到参数的低16位。</p>
+<p>而取高16位的宏HIWORD则更简单，只需将参数右移16位，剩下的就是原高16位的值了。</p>
+<p>Objective-C的编译器在编译后会在每个方法中加两个隐藏的参数:</p>
+<ul>
+<li>一个是_cmd，当前方法的一个SEL指针。</li>
+</ul>
+<ul>
+<li><p>另一个就是用的比较多的self，指向当前对象的一个指针。</p>
+<p>  <code>NSLog(@&quot;%@&quot;,NSStringFromSelector(_cmd));</code></p>
+</li>
+</ul>
+<p>总结：</p>
+<p><code>LOWORD()</code>得到一个32bit数的低16bit。</p>
+<p><code>HIWORD()</code>得到一个32bit数的高16bit。</p>
+<p><code>LOBYTE()</code>得到一个16bit数最低（最右边）那个字节。</p>
+<p><code>HIBYTE()</code>得到一个16bit数最高（最左边）那个字节。</p>
+<h3 id="跟踪方法"><a href="#跟踪方法" class="headerlink" title="跟踪方法"></a><a name="2"><font size="5">跟踪方法</font></a></h3><p>我们hook主要是hook方法，然后找到执行的方法中去做我们想做的事情。</p>
+<p>如何快速定位某个Class执行到的方法？</p>
+<p>1、我一般先用界面工具<code>Interface Inspector</code>先找到当前的Class</p>
+<p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-2.jpg" alt="">    </p>
+<p>2、查找当前执行的方法（核心）</p>
+<ul>
+<li><p>dtrace（建议）</p>
+<p>可以通过它来监控应用程序或者内核的调用。</p>
+<p>格式：</p>
+<p>  sudo dtrace -n ‘objc$target:ClassXX::entry{}’ -p 进程id（PID））</p>
+<p>示例：</p>
+<p>  sudo dtrace -n ‘objc$target: STPreferencesWindowController::entry{}’ -p 6840</p>
+<p>安装: // 安装时间较长</p>
+<pre><code>git clone git://github.com/frida/frida.git 
+cd frida
+make
+</code></pre></li>
+</ul>
+<p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-6.jpg" alt="">    </p>
+<p> 点击了设置页面的<code>browse...</code>按钮</p>
+<p> 触发的方法是：</p>
+<p> <code>browseDefaultFolder:</code>方法。</p>
+<ul>
+<li><p>frida(不建议使用，打印的太频繁)</p>
+<p>  可以通过这个工具来跟踪指定方法或者指定类的调用过程。</p>
+<p>  格式：</p>
+<pre><code>frida-trace -m &quot;-[ClassXX *]&quot; 程序名称
+</code></pre><p>示例：</p>
+<p>  frida-trace -m “-[STPreferencesWindowController *]” Sourcetree</p>
+<p>安装:</p>
+<pre><code>sudo easy_install pip // 先安装pip
+sudo pip install frida
+</code></pre></li>
+</ul>
+<p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-7.jpg" alt="">    </p>
+<ul>
+<li><p>lldb</p>
+<p>  通过打断点去调试出信息日志。</p>
+</li>
+<li><p>猜</p>
+</li>
+</ul>
+<p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-5.jpg" alt=""></p>
+<h3 id="资源文件"><a href="#资源文件" class="headerlink" title="资源文件"></a><a name="3"><font size="5">资源文件</font></a></h3><p>由于使用的技术是通过动态库的方式植入到应用中，但动态库即使你在拖入的时候勾选了target，但实际查看时是没有被勾选的，也就是说通过动态库的方式是打包不进去资源文件。</p>
+<p>如何把资源文件实践在应用中？</p>
+<p>查看应用:</p>
+<p><code>xx/Contents/Resources</code></p>
+<p><img src="/2018/11/16/Mac逆向工程-入门2/Mac逆向工程-进阶篇-4.jpg" alt=""></p>
+<p>发现<code>Resources</code>文件夹存放的都是资源文件。</p>
+<blockquote>
+<p>直接把需要的资源文件拖进去如何？</p>
+</blockquote>
+<p>1、图片、plist等资源直接拖进去是可行的。</p>
+<p>2、xib文件直接拖进去是不能被找到的，原因是打包后的xib文件成了nib文件。</p>
+<blockquote>
+<p>如何成为nib文件？</p>
+</blockquote>
+<p>随便建个Mac应用，在Resources找到这个nib,然后再拖入到需要显示的应用中即可。</p>
+<blockquote>
+<p>当然你也可以通过绝对路劲的方式去载入，这种方式不灵活也不方便。</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><a name="5"><font size="5">总结</font></a></h3><ul>
+<li><p>如果想研究汇编里面指令知识，最好写个Demo然后Hopper分析里面的代码。</p>
+</li>
+<li><p>通过动态库注入的方式修改应用，一般是先找到当前页面的<code>Class</code>,然后找到执行的方法。</p>
+</li>
+<li><p>修改执行的操作可以通过Hopper软件,<code>Modify -&gt; Assemble Instruction…</code>或<code>Window/Hexadecimal Editor</code>直接双击修改执行的指令或通过hook的方式（常用方式）去修改。</p>
+</li>
+<li><p>对于一些资源文件的载入需要拖入到<code>xx/Contents/Resources</code>文件夹中即可。</p>
+</li>
+<li><p>通过hook方式，一般采用分类的方式为某个<code>Class</code>添加方法或属性。</p>
+</li>
+</ul>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="Thomas">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            我的名字叫Thomas。<br>从事iOS行业。
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>近期文章</h3>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-入门2/">Mac逆向工程-入门2</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-SourceTree自定义操作/">Mac逆向工程-SourceTree自定义操作</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-入门/">Mac逆向工程-入门</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义标签/">SourceTree自定义标签</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义脚本配置/">SourceTree自定义脚本配置</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/Thomaszhouwu" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:1079119409@qq.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Thomas. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
