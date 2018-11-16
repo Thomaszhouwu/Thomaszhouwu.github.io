@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="什么是逆向工程逆向工程（又称逆向技术），是一种产品设计技术再现过程，即对一项目标产品进行逆向分析及研究，从而演绎并得出该产品的处理流程、组织结构、功能特性及技术规格等设计要素，以制作出功能相近，但又不完全一样的产品。 –来自百度百科。
+
+必备知识：
+
+
+熟悉Mac应用开发
+熟悉汇编知识
+熟悉ARM或">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Thomas">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Mac逆向工程-入门">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Thomas&#39;s博客">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>Mac逆向工程-入门 - Thomas&#39;s博客</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="//unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Thomas's博客">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Thomas's博客">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/" title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/archives" title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/tags" title="Tags">
+                    Tags
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">Mac逆向工程-入门</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-11-16</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <h1 id="什么是逆向工程"><a href="#什么是逆向工程" class="headerlink" title="什么是逆向工程"></a>什么是逆向工程</h1><p>逆向工程（又称逆向技术），是一种产品设计技术再现过程，即对一项目标产品进行逆向分析及研究，从而演绎并得出该产品的处理流程、组织结构、功能特性及技术规格等设计要素，以制作出功能相近，但又不完全一样的产品。 –来自百度百科。</p>
+<blockquote>
+<p>必备知识：</p>
+</blockquote>
+<ul>
+<li>熟悉Mac应用开发</li>
+<li>熟悉汇编知识</li>
+<li>熟悉<a href="http://www.go-gddq.com/down/2011-06/11061720576267.pdf" target="_blank" rel="noopener">ARM</a>或<a href="http://blog.csdn.net/deng_sai/article/details/50130807" target="_blank" rel="noopener">X86</a>常用指令</li>
+<li>硬件知识</li>
+<li>……</li>
+</ul>
+<h1 id="分析思路"><a href="#分析思路" class="headerlink" title="分析思路"></a>分析思路</h1><p>界面分析  -&gt;  动态分析  -&gt;  静态分析  -&gt;  动态库注入  -&gt;  …</p>
+<ul>
+<li><p>界面分析：</p>
+<p>  在Mac上面也有类似iOS Reveal的工具叫做Interface Inspector。</p>
+</li>
+<li><p>动态分析:</p>
+<p>  动态跟踪的方法有多种，除了iOS逆向中使用的Frida, lldb , Mac上面还可以使用Dtrace。<br>  通过执行了一些操作去分析问题。</p>
+</li>
+<li><p>静态分析:</p>
+<p>  根据假设的某个条件（因素）静止不变去分析。</p>
+</li>
+<li><p>动态库注入:</p>
+<p>  动态库注入可以通过DYLD_INSERT_LIBRARIES注入，也可以直接注入到可执行文件的Load Command。</p>
+</li>
+</ul>
+<p>–</p>
+<p> 界面分析之-<a href="https://www.interface-inspector.com" target="_blank" rel="noopener">Interface Inspector</a>：</p>
+<p>这个工具跟iOS Reveal类似，可以分析当前页面元素等。</p>
+<p><img src="/2018/11/16/Mac逆向工程-入门/逆向工程-1.png" alt=""></p>
+<p>Interface Inspector通过这个工具 可以得知当前页面的ClassName,控件以及布局方式。</p>
+<p>作用：</p>
+<p>控件:得知控件的显示后，方便以后修改UI或插入UI等。</p>
+<p>通过ClassName 可以hook住当前VC 里面的方法，从而通过调用方法来修改某个控件或者执行想要的操作。</p>
+<blockquote>
+<p>注意：使用这个工具时，需要<a href="http://www.jianshu.com/p/653fac3d3b83" target="_blank" rel="noopener">Rootless</a>，关闭内核的保护。</p>
+</blockquote>
+<p>–</p>
+<p>动态分析：动态跟踪</p>
+<p>动态跟踪的方法有多种，除了iOS逆向中使用的Frida, lldb , Mac上面可以使用Dtrace。</p>
+<p>Dtrace：</p>
+<p>可以通过它来监控应用程序或者内核的调用，所以这里可以用于监控OC函数的调用。</p>
+<p>动态库注入:</p>
+<p>Xcode 新建dylib项目</p>
+<p>找到了函数之后，可以写个动态库注入为了方便调试以及动态库注入这里创建一个dylib的Xcode项目，选择macOS Library，点击创建，Type选择Dynamic。</p>
+<p>为了Hook函数，先选择一个现成的库来做，可以选择:</p>
+<ul>
+<li>ZKSwizzle</li>
+<li>Aspects</li>
+<li>substitute</li>
+<li>……</li>
+</ul>
+<p>我们拿GitHUB星数最多Aspects 第三方去在SoureTree 应用添加按钮。效果如下：</p>
+<p><img src="/2018/11/16/Mac逆向工程-入门/逆向工程-2.gif" alt=""></p>
+<p>–</p>
+<p>程序重新签名打包：</p>
+<p>方式一：</p>
+<p>通过optool命令：</p>
+<p>语法：</p>
+<pre><code>optool install -c load -p 动态库路径 -t 主程序路径
+</code></pre><p>实例：</p>
+<pre><code>optool install -c load -p /Users/lvmam/Desktop/op/libinvoke.dylib -t /Applications/    SourceTree.app/Contents/MacOS/SourceTree
+</code></pre><p>方式二：</p>
+<p>通过第三方封装好的框架打包。</p>
+<p>见：</p>
+<p>1、安装：<a href="https://github.com/AloneMonkey/MonkeyDev/wiki/安装" target="_blank" rel="noopener">https://github.com/AloneMonkey/MonkeyDev/wiki/安装</a></p>
+<p>2、项目搭建：<a href="https://github.com/AloneMonkey/MonkeyDev/wiki/Mac应用插件" target="_blank" rel="noopener">https://github.com/AloneMonkey/MonkeyDev/wiki/Mac应用插件</a></p>
+<p>打包成dmg文件见<a href="http://www.jianshu.com/p/c6cd257676bf" target="_blank" rel="noopener">打包dmg文件</a></p>
+<p>–</p>
+<p>反编译工具：</p>
+<ul>
+<li><p><a href="https://www.hopperapp.com/" target="_blank" rel="noopener">Hopper</a><br>  Hopper 是一种适用于 OS X 和 Linux 的逆向工程工具，可以用于反汇编、反编译和调试 32位/64位英特尔    处理器的 Mac、Linux、Windows 和 iOS 可执行程序！</p>
+</li>
+<li><p><a href="https://www.hex-rays.com/products/ida/support/download.shtml" target="_blank" rel="noopener">IDA</a>DataRescue IDA Pro Disassembler and Debugger 是目前最棒的一个静态反编译软件，为众多0day世界的成员和ShellCode安全分析人士不可缺少的利器!IDA Pro Disassembler and Debugger是一款交互式的，可编程的，可扩展的，多处理器的，交叉Windows或Linux WinCE MacOS平台主机来分析程序， 被公认为最好的花钱可以买到的逆向工程利器。IDA Pro已经成为事实上的分析敌意代码的标准并让其自身迅速成为攻击研究领域的重要工具。它支持数十种CPU指令集其中包括Intel x86,x64,MIPS,PowerPC，ARM，Z80,68000k，c8051等等。它的优点是可以更好的反汇编和更有深层分析。可以快速到达指定的代码位置；可以看到跳到指定的位置的jmp的命令位置；可以看参考字符串；可以保存静态汇编等。</p>
+</li>
+</ul>
+<p>–<br>Hopper使用：</p>
+<p>1、鼠标右键XX应用，点击进入显示包内容，然后进入Content文件夹——&gt;MacOS文件夹</p>
+<p>2、找到exec格式文件拖入到Hopper</p>
+<p>如下图所示：</p>
+<p><img src="/2018/11/16/Mac逆向工程-入门/逆向工程-3.png" alt=""></p>
+<p>在Labels选项卡中一般呈现的是应用用到的Class</p>
+<p>在Strings选项卡中一般呈现的是方法（函数）</p>
+<p>编辑某个指令并生效：</p>
+<ul>
+<li>在Labels选项下，选择某个类方法</li>
+<li>选择Modify菜单-&gt;assemable Instruction</li>
+<li>在弹出的框中输入要修改的值</li>
+<li>选择File菜单-&gt;Produce New Execuable 保存修改的指令 </li>
+<li>替换Content文件夹——&gt;MacOS文件夹原来的exec文件即可。</li>
+</ul>
+<p>–</p>
+<h1 id="相关文档推荐"><a href="#相关文档推荐" class="headerlink" title="相关文档推荐"></a>相关文档推荐</h1><ul>
+<li><a href="http://www.cnblogs.com/jailbreaker" target="_blank" rel="noopener">16字节 专注iOS安全</a></li>
+<li><a href="http://www.alonemonkey.com" target="_blank" rel="noopener">Alonemonkey 专注Mac应用</a></li>
+</ul>
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="Thomas">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            我的名字叫Thomas。<br>从事iOS行业。
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>近期文章</h3>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-入门/">Mac逆向工程-入门</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义标签/">SourceTree自定义标签</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义脚本配置/">SourceTree自定义脚本配置</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/Thomaszhouwu" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:1079119409@qq.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Thomas. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
