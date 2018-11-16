@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.8.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="前言通过 Mac逆向工程-入门  文章我们对Mac逆向应用有了一定的了解，如果想对Mac上的应用做一些UI修改，可以通过[动态库注入]的方式修改代码就能达到自己的需求。
+这次在Sourcetree应用中加入了2个功能。
+
+在Sourcetree中的review code仓库页面中的Toolbar上加">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Thomas">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Mac逆向工程-SourceTree自定义操作">
+    
+
+    <!--Open Graph Description-->
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Thomas&#39;s博客">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>Mac逆向工程-SourceTree自定义操作 - Thomas&#39;s博客</title>
+
+    <!-- Tachyons Core CSS -->
+    <link rel="stylesheet" href="//unpkg.com/tachyons/css/tachyons.min.css">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<!-- Main Content -->
+<!-- Banner -->
+<!-- Banner -->
+<div class="w-100 bg-1 ph5-ns ph3 text-light">
+    
+    <nav class="db dt-l w-100 mw8 center border-box pv3">
+        <a class="db dtc-l v-mid link dim w-100 w-25-l tc tl-l mb2 mb0-l white" href="/" title="Thomas's博客">
+            <img src="http://www.codeblocq.com/assets/projects/hexo-theme-anodyne/assets/anodyne.svg" class="dib h3" alt="Thomas's博客">
+        </a>
+        <div class="db dtc-l v-mid w-100 w-75-l tc tr-l">
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/" title="Home">
+                    Home
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/archives" title="Archives">
+                    Archives
+                </a>
+            
+                <a class="link dim f6 f5-l dib mr3 mr4-l white" href="/tags" title="Tags">
+                    Tags
+                </a>
+            
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="w-100 mw8 center vh-40 dt">
+        <div class="dtc v-mid white">
+            <h1 class="f1-l f2-m tc tc-m tl-ns">Mac逆向工程-SourceTree自定义操作</h1>
+            <p class="f4 fw3 pab-100px tc tc-m tl-ns">2018-11-16</p>
+        </div>
+    </div>
+
+    <!-- Icon -->
+    <div class="relative w-100 mw8 center white dn dn-m db-ns">
+        <i class="header-icon fa fa-file-text-o"></i>
+    </div>
+</div>
+
+<!-- Content -->
+<div class="w-100 ph2 ph4-m ph5-l mv5 mv6-l">
+    <div class="content">
+        <div class="mw8 center">
+            <div class="cf">
+                <div class="fl w-100 w-70-l mw7 left fw3 lh-copy pr4-ns pr0-m post-content">
+                    <!-- Tags Vertical -->
+                    
+
+                    <!-- Main Post Content -->
+                    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>通过<a href="https://thomaszhouwu.github.io/2018/11/16/Mac%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B-%E5%85%A5%E9%97%A8/" target="_blank" rel="noopener"> Mac逆向工程-入门 </a> 文章我们对Mac逆向应用有了一定的了解，如果想对Mac上的应用做一些UI修改，可以通过[动态库注入]的方式修改代码就能达到自己的需求。</p>
+<p>这次在Sourcetree应用中加入了2个功能。</p>
+<ul>
+<li>在Sourcetree中的review code仓库页面中的Toolbar上加入几个按钮，替代CustomAction中的快捷键(见图一)。</li>
+<li>在点击pull（拉取）按钮时，自动勾选用变基替换合并 CheckBox(见图二)。</li>
+</ul>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree1.png" alt=""> </center><br><center> <strong>图一:Toolbar上加入的几个按钮</strong> </center>
+
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree2.png" alt=""> </center><br><center> <strong>图二:默认勾选变基替换合并</strong> </center>
+
+
+<h1 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h1><h4 id="问题1：在Sourcetree中的review-code仓库页面中的加入几个按钮？？？"><a href="#问题1：在Sourcetree中的review-code仓库页面中的加入几个按钮？？？" class="headerlink" title="问题1：在Sourcetree中的review code仓库页面中的加入几个按钮？？？"></a>问题1：在Sourcetree中的review code仓库页面中的加入几个按钮？？？</h4><blockquote>
+<p>既然是修改UI元素，我们首先想到的是借助Interface Inspector工具界面分析。</p>
+</blockquote>
+<p>首先我们进入到Sourcetree的review code仓库页面，通过Interface Inspector查看UI元素。</p>
+<p>我们从图中可以看到有以下信息我们值得去参考和使用:</p>
+<ul>
+<li><p>STGitWindowController 是这个页面的class。</p>
+</li>
+<li><p>STGitWindowController的class上的window是STDimmableWindow。</p>
+</li>
+<li><p>STDimmableWindow上有个NSToolbar。</p>
+</li>
+<li><p>NSToolbar上存放的是我们的点击按钮。</p>
+</li>
+<li><p>item之间的间距是通过NSToolbarSpaceItem组件分割的。</p>
+</li>
+<li><p>点击NSToolbar上的item，可以查看到item的icon size占据的大小(图中看不出)。</p>
+</li>
+</ul>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree4.png" alt=""> </center>
+
+
+<h4 id="问题2：在点击pull（拉取）按钮时，自动勾选用变基替换合并？？？"><a href="#问题2：在点击pull（拉取）按钮时，自动勾选用变基替换合并？？？" class="headerlink" title="问题2：在点击pull（拉取）按钮时，自动勾选用变基替换合并？？？"></a>问题2：在点击pull（拉取）按钮时，自动勾选用变基替换合并？？？</h4><blockquote>
+<p>既然是修改代码，我们首先想到的是通过Hopper 这个反编译工具去修改某个值，现在默认是没有勾选的，修改一个bool值改为YES,不就能自动勾选了吗？</p>
+</blockquote>
+<p>分析：</p>
+<p>1、首先得找到点击pull(拉取)事件。</p>
+<p>如何获取？？？</p>
+<p>我们可以通过：</p>
+<p>1&gt; 动态跟踪（lldb），根据我们点击的过程是追踪到执行的事件。 </p>
+<p>2&gt; 通过页面的class 在反编译Hopper工具分析出来的方法去&lt;猜&gt;。</p>
+<p>我首先想用到的是以猜的方式去找这个点击的事件，既然是pull,那我直接在STGitWindowController class 中搜索pull，经过搜索果然有这个方法，查看之。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree5.png" alt=""> </center>
+
+<p>查看源码并分析，点击pull按钮后，弹出的页面是STGitPullsheetController,搜索STGitPullsheetController 的rebase关键字。我为什么会搜索rebase 关键字，是因为勾选用变基替换合并的变基英文单词是rebase。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree6.png" alt=""> </center>
+
+
+<p>通过图片中我们知道rebase的set方法默认是0x0,这个rebase可以得出是存放的bool值，我们把get方法的值改为0x1,这样不就OK了吗？ </p>
+<p>尝试修改并实践。。。。最后得出结论，果然是修改这个值。</p>
+<p>(如何修改请看<a href="http://lvioscode.com/ios_documents/documents/blob/master/%E7%9F%A5%E8%AF%86%E5%BA%93/Mac逆向工程-入门篇.md" target="_blank" rel="noopener"> Mac逆向工程-入门篇 </a>)。</p>
+<h1 id="项目搭建-在入门篇已讲过"><a href="#项目搭建-在入门篇已讲过" class="headerlink" title="项目搭建(在入门篇已讲过)"></a>项目搭建(在入门篇已讲过)</h1><p>创建一个dylib的Xcode LVCustomSourceTree 项目，选择macOS Library，点击创建，Type选择Dynamic。我们这里选择的是一个动态库的模板MonkeyAppMac，<br>这个模板的作用是帮我们的应用做了签名，具体的看<a href="http://lvioscode.com/ios_documents/documents/blob/master/%E7%9F%A5%E8%AF%86%E5%BA%93/Mac逆向工程-入门篇.md" target="_blank" rel="noopener"> Mac逆向工程-入门篇 </a>。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree3.gif" alt=""> </center>
+
+
+<p>通过&lt;问题1&gt;的分析之后，我们需要勾住STGitPullsheetController 这个class，然后在windowDidLoad执行完之后去重新绘制我们的Toolbar。</p>
+<p>这里我们借助了第三方Aspect去hook住STGitPullsheetController 的windowDidLoad方法，代码如下：</p>
+<pre><code>NSError *error;
+[objc_getClass(&quot;STGitWindowController&quot;) aspect_hookSelector:@selector(windowDidLoad) withOptions:AspectPositionAfter usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) {
+        NSLog(@&quot;arguments-&gt;%@&quot;, aspectInfo.arguments);
+        NSLog(@&quot;instance-&gt;%@\n&quot;, aspectInfo.instance);
+ } error:&amp;error];
+</code></pre><p>hook住之后，我们需要绘制我们需要的UI。</p>
+<pre><code>- (void)lv_addMyCustomToolBar:(NSWindowController *)window {
+    self.lvcurrentWindowController = window;
+    NSWindow *dimmableWindow = window.window;
+    NSToolbar *toolBar = dimmableWindow.toolbar;
+    for (NSToolbarItem *item in toolBar.visibleItems) {
+        [self.lvtoolBarItems addObject:item];
+        [self.lvitemIdentifiers addObject:item.itemIdentifier];
+    }
+
+    //  NSToolbarFlexibleSpaceItem // 伸缩空间
+    //  NSToolbarSpaceItem // 间距
+
+    [self.lvitemIdentifiers insertObject:@&quot;NSToolbarSpaceItem&quot; atIndex:10]; // 加入间隔
+
+    // 加入NSToolbarItem标识符
+    [self.lvitemIdentifiers insertObject:@&quot;lvopenWorkSpaceItemIdentifier&quot; atIndex:11];
+    [self.lvitemIdentifiers insertObject:@&quot;lvnoUpdateItemIdentifier&quot; atIndex:12];
+    [self.lvitemIdentifiers insertObject:@&quot;lvinstallItemIdentifier&quot; atIndex:13];
+    [self.lvitemIdentifiers insertObject:@&quot;lvrebaseUpstreamItemIdentifier&quot; atIndex:14];
+    [self.lvitemIdentifiers insertObject:@&quot;lvrebaseContinueItemIdentifier&quot; atIndex:15];
+    [self.lvitemIdentifiers insertObject:@&quot;lvremotesItemIdentifier&quot; atIndex:16];
+    [self.lvitemIdentifiers insertObject:@&quot;lvtagsItemIdentifier&quot; atIndex:17];
+
+    NSToolbar *toolbar = [[NSToolbar alloc] initWithIdentifier:@&quot;LVToolbarIdentifier&quot;];  // 新建一个Toolbar 替换掉原来的NSToolbar
+    self.lvtoolBar = toolbar;
+    [self.lvtoolBar setDelegate:[LVCustomSourceTree lvsharedSourceTree]]; // 使用单列对象
+    [dimmableWindow setToolbar:self.lvtoolBar]; // 替换掉原来的
+}     
+</code></pre><p>这里介绍下在Mac上 NSToolbar绘制item是通过delegate去绘制的。</p>
+<p>代码解释:</p>
+<p>1、由于我们保留原来的item，所以我们先去获取到原来的item，并用lvtoolBarItems数组保存，由于每一个item必须是要有个标识符，所以我们用lvitemIdentifiers来存储item的标识符。</p>
+<p>2、存储完之前的item,加入我们自定义的item标识符。</p>
+<p>3、设置代理，这里我们使用的代理对象是通过单例去设置的。(保证唯一性)</p>
+<p>4、在NSToolbar的代码去绘制自定义的item。</p>
+<pre><code>#pragma NSToolbarDelegate
+// 所有的item 标识
+- (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
+    return self.lvitemIdentifiers;
+}
+
+// 实际显示的item 标识
+- (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
+    return self.lvitemIdentifiers;
+}
+
+// 根据item 标识 返回每个具体的NSToolbarItem对象实例
+- (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag {
+    NSToolbarItem *toolBarItem = [self lv_oldToolBarItem:itemIdentifier];
+    if (toolBarItem) {
+        return toolBarItem;
+    } else {
+        return [self lv_customToolbarItem:itemIdentifier];
+    }
+}
+</code></pre><p>通过上面的代码并运行发现我们的程序确实已经修改了，但点击事件没有执行。</p>
+<p>如何执行自定义action的事件？？？？</p>
+<p>改代码，我们第一个想到的是Hoper去分析代码。</p>
+<p>既然是执行自定义的action，直接搜索customaction。</p>
+<p>如下图：</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree7.png" alt=""> </center>
+
+<p>发现<code>SourceTreeAppDelegate performCustomAction</code>方法跟我们执行得方法很像。</p>
+<p>继续搜索这个<code>performCustomAction</code> ,发现<code>STRepoWindowController performCustomAction</code> STRepoWindowController这个class用到了，点击这个方法并分析，看到这个STRepoWindowController class确实用到了<code>SourceTreeAppDelegate performCustomAction:</code>方法，但我们的当前页面class是<code>STGitWindowController</code>。</p>
+<p>细想?????</p>
+<p>这个STRepoWindowController class的方法可以在 STGitWindowController中使用，第一个想到的就是STRepoWindowController是STGitWindowController的基类，这样才能去执行在子类调用父类的方法。</p>
+<p>通过代码查看：</p>
+<pre><code>NSWindowController *window = (NSWindowController *)aspectInfo.instance;
+   NSLog(@&quot;classs:%@&quot;,[window superclass]);
+</code></pre><p> 验证了我们的推测。</p>
+<p>那我们这就好做了，我们直接通过代码去执行<code>performCustomAction:</code>不就OK了吗？</p>
+<p>但这个方法是有个参数的，它是如何执行多个cusomAction呢？ 我们查看这个方法具体是怎么操作的。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree8.png" alt=""> </center>
+
+<p>我们分析、发现这个参数使用了tag，不尽让我们想起了原来sourcetree 自定义事件是通过tag去执行对应的操作的。那我们通过对点击的执行事件的对象传入对应的tag不就都OK了吗？</p>
+<p>既然自定义的action是从菜单(menu)里面的项去点击的，直接新建一个NSMenuItem，然后对应上自己的tag就好了。</p>
+<pre><code>- (void)lv_performSelectorCustomMethod:(NSMenuItem *)customActionItem {
+    SEL selector = NSSelectorFromString(@&quot;performCustomAction:&quot;);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored &quot;-Warc-performSelector-leaks&quot;
+    [self.lvcurrentWindowController performSelector:selector withObject:customActionItem];
+#pragma clang diagnostic pop
+}
+</code></pre><p>运行程序，发现按钮上的图标没有显示出来，难道通过动态库的注入的方式只能注入代码不能注入资源文件？<br>在我们自己的工程中，我们的framework是通过bundle的方式显示资源的，我们其实也可以。但这样有个不方便的地方就是安装的人电脑上得有这个资源文件，这很麻烦。我们也知道在xxx.app的包下的Resource存放的是资源文件，我们直接把资源文件拖进就好了。</p>
+<p>运行我们的程序，果然如我们所想的那样。</p>
+<h2 id="V-2-6-3-3-记-在设置页面-加入是否-显示Diff-信息"><a href="#V-2-6-3-3-记-在设置页面-加入是否-显示Diff-信息" class="headerlink" title="V 2.6.3.3 记(在设置页面 加入是否 显示Diff 信息)"></a>V 2.6.3.3 记(在设置页面 加入是否 显示Diff 信息)</h2><p>发现<code>V2.6.3</code> 这个版本用起来非常的卡，最卡的是一进入仓库预览信息页面，这个页面默认执行的操作比较多，那我们能不能去除一些不必要的操作来减少内存的消耗呢？</p>
+<p>通过查看、分析，在进入仓库页面时，肉眼可以看到会执行这三个操作：</p>
+<ul>
+<li>显示提交历史记录信息</li>
+<li>根据最后一次选中的历史信息条目显示具体的提交信息（左下角左侧）</li>
+<li>显示具体条目信息时，会在右侧请求加载显示具体的比对信息（右下角右侧）。</li>
+</ul>
+<p>通过<code>Interface Inspector</code> 界面分析这个页面是<code>STLogViewController</code>。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree9.png" alt=""> </center>
+
+<p>然后通过Hopper反编译<code>STLogViewController</code> 这个类相关的方法，搜索<code>diff</code>关键字，我们发现<code>refreshDiffView</code>这个方法跟我们比对信息执行后的显示很像，我们hook住这个方法就能得到验证。我们现在做的就是把这个方法不要去执行操作，减少内存的消耗，达到不要那么卡的效果。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree10.png" alt=""> </center>
+
+<p>我们还有个需求就是在设置页面加入一个开关来控制这个Diff信息显示。<br>首先我们得知道这个设置页面的class，然后在这个class的view上加入我们自定义的view。<br>通过<code>Interface Inspector</code> 界面分析这个耗时的页面是<code>STPreferencesWindowController</code>。</p>
+<center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree11.png" alt=""> </center>
+
+<p>设置页面加入如下代码：</p>
+<pre><code>[objc_getClass(&quot;STPreferencesWindowController&quot;) aspect_hookSelector:@selector(windowDidLoad) withOptions:AspectPositionAfter usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) {
+        NSWindowController *window = (NSWindowController *)aspectInfo.instance;
+        NSButton *oldSTPreAllowConfigFilesButton = nil;
+        for (NSView *view in [window.window.contentView subviews]) { // 取出当前的View
+            if ([view isKindOfClass:[NSButton class]]) {
+                oldSTPreAllowConfigFilesButton = (NSButton *)view;
+                break;
+            }
+        }
+        if (oldSTPreAllowConfigFilesButton) {
+            NSButton *diffButton = [[NSButton alloc] initWithFrame:CGRectMake(CGRectGetMaxX(oldSTPreAllowConfigFilesButton.frame) + 10, oldSTPreAllowConfigFilesButton.frame.origin.y, 105, oldSTPreAllowConfigFilesButton.frame.size.height)];
+            [diffButton setButtonType:NSButtonTypeSwitch];
+            [diffButton setTarget:window];
+            [diffButton setAction:@selector(lvCheckBoxClicked:)];
+            [diffButton setState:[LVUserDefaults instance].lvShowDiffView ? NSControlStateValueOn : NSControlStateValueOff];
+            [diffButton setTitle:@&quot;Show DiffView&quot;];
+            [window.window.contentView addSubview:diffButton];
+        }
+    } error:&amp;error];
+</code></pre><center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree12.png" alt=""> </center><br><center> <strong>设置页面加入的开关</strong> </center>
+
+<p>控制Diff是否显示代码如下：</p>
+<pre><code>[objc_getClass(&quot;STLogViewController&quot;) aspect_hookSelector:@selector(refreshDiffView) withOptions:AspectPositionInstead usingBlock:^(id&lt;AspectInfo&gt; aspectInfo) {
+        NSViewController *viewController = [aspectInfo instance];
+        NSView *paranetDiffView = [[viewController.view subviews] lastObject];
+        NSView *paranetDiffView2 = [paranetDiffView.subviews lastObject];
+        NSView *paranetDiffView3 = [[paranetDiffView2 subviews] lastObject];
+        for (NSView *view in [paranetDiffView3 subviews]) {
+            if ([view isKindOfClass:NSClassFromString(@&quot;STSplitView&quot;)]) {
+                if (view.subviews.count &gt; 1) {
+                    NSView *diffView = [view.subviews lastObject];
+                    diffView.hidden = ![LVUserDefaults instance].lvShowDiffView;
+                }
+                break;
+            }
+        }
+        if ([LVUserDefaults instance].lvShowDiffView) {  // 执行原方法
+            NSInvocation *invoke = [aspectInfo originalInvocation];
+            [invoke invoke];
+        }
+
+    } error:&amp;error];
+</code></pre><center>  <img src="/2018/11/16/Mac逆向工程-SourceTree自定义操作/customSourcetree13.jpg" alt=""> </center><br><center> <strong>仓库页面开关显示对比</strong> </center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+                    <!-- Tags Bottom -->
+                    
+
+                    <!-- Comments -->
+                    
+
+
+
+                </div>
+                <div class="fl w-100 w-30-l center fw3 lh-copy pl4-ns tl black-50">
+                    
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 1: About -->
+                    <div class="mt5 mt0-l">
+    <article class="dt db-l mw8 mw8-m mw5-ns center ml0-l bg-white mv3">
+        <div class="dn dtc-m db-l v-mid tc pr4 pr0-l" style="min-width: 6rem;">
+            <img src="http://tachyons.io/img/avatar_1.jpg" class="mb4-l br-100 h3 w3 h4-l w4-l dib" title="Thomas">
+        </div>
+        <div class="dtc db-l v-mid lh-copy measure center f6 black-50 tj">
+            我的名字叫Thomas。<br>从事iOS行业。
+        </div>
+    </article>
+</div>
+
+                    <hr class="dn-l mw4 black-50 mt5">
+                    
+                    <!-- Widget 2: Categories -->
+                    
+
+                    <!-- Widget 3: Recent Posts -->
+                    <div class="mt5 tc tl-l">
+    <h3>近期文章</h3>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-SourceTree自定义操作/">Mac逆向工程-SourceTree自定义操作</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/16/Mac逆向工程-入门/">Mac逆向工程-入门</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义标签/">SourceTree自定义标签</a>
+        </p>
+    
+        <p>
+            <a href="/2018/11/14/Sourcetree自定义脚本配置/">SourceTree自定义脚本配置</a>
+        </p>
+    
+</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Footer -->
+<div class="bg-1 ph2 ph5-ns pv5">
+        <div class="mv8">
+            <div class="center tc">
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="https://github.com/Thomaszhouwu" target="_blank">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                
+                    <div class="dib mh3">
+                        <a class="f3 f2-ns white dim" href="mailto:1079119409@qq.com" target="_blank">
+                            <i class="fa fa-envelope"></i>
+                        </a>
+                    </div>
+                
+            </div>
+            <div class="f6 f5-ns center tc white pt5 fw3">
+                @Thomas. All right reserved | Design & Hexo <a class="link dim white" href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+            </div>
+        </div>
+    </div>
+
+<!-- After Footer -->
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
